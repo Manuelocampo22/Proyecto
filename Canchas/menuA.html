@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel de Administrador</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #eef2f3;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #007BFF;
+      color: #fff;
+      padding: 15px;
+      text-align: center;
+    }
+    nav {
+      display: flex;
+      justify-content: center;
+      background: #0056b3;
+    }
+    nav button {
+      background: none;
+      border: none;
+      color: #fff;
+      padding: 15px 20px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    nav button:hover {
+      background: #003f7f;
+    }
+    section {
+      display: none;
+      padding: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    table, th, td {
+      border: 1px solid #ccc;
+    }
+    th, td {
+      padding: 8px;
+      text-align: center;
+    }
+    input, button, select {
+      margin: 5px;
+      padding: 8px;
+    }
+    #inicio {
+      text-align: center;
+    }
+    #inicio img {
+      max-width: 300px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Panel de Administrador</h1>
+  </header>
+  <nav>
+    <button onclick="mostrar('inicio')">Inicio</button>
+    <button onclick="mostrar('usuarios')">Usuarios</button>
+    <button onclick="mostrar('reservas')">Reservas</button>
+    <button onclick="mostrar('canchas')">Canchas</button>
+    <button onclick="salir()">Salir</button>
+  </nav>
+
+  
+  <section id="inicio">
+    <h2>Bienvenido al Panel de Administración</h2>
+    <p>Seleccione una opción del menú superior para comenzar.</p>
+    <img src="imagenes/balon.jpeg" alt="">
+  </section>
+
+  
+  <section id="usuarios">
+    <h2>Gestión de Usuarios</h2>
+    <table id="tablaUsuarios">
+      <tr><th>Usuario</th><th>Rol</th></tr>
+    </table>
+    <h3>Registrar nuevo usuario</h3>
+    <input type="text" id="nuevoUsuario" placeholder="Nombre de usuario">
+    <select id="nuevoRol">
+      <option value="Usuario">Usuario</option>
+      <option value="Administrador">Administrador</option>
+    </select>
+    <button onclick="agregarUsuario()">Agregar Usuario</button>
+  </section>
+
+  
+  <section id="reservas">
+    <h2>Gestión de Reservas</h2>
+    <table id="tablaReservas">
+      <tr><th>Cancha</th><th>Usuario</th><th>Hora</th><th>Acción</th></tr>
+    </table>
+  </section>
+
+  
+  <section id="canchas">
+    <h2>Gestión de Canchas</h2>
+    <table id="tablaCanchas">
+      <tr><th>Cancha</th><th>Ubicación</th><th>Tipo</th><th>Acción</th></tr>
+    </table>
+    <h3>Agregar nueva cancha</h3>
+    <input type="text" id="nuevaCancha" placeholder="Nombre de cancha">
+    <input type="text" id="ubicacionCancha" placeholder="Ubicación">
+    <input type="text" id="tipoCancha" placeholder="Tipo de cancha">
+    <button onclick="agregarCancha()">Agregar Cancha</button>
+  </section>
+
+  <script>
+    
+    let usuarios = [
+      ["admin1", "Administrador"],
+      ["user1", "Usuario"],
+      ["user2", "Usuario"]
+    ];
+
+    let reservas = [
+      ["Cancha 1", "user1", "10:00 AM"],
+      ["Cancha 2", "user2", "3:00 PM"]
+    ];
+
+    let canchas = [
+      ["Cancha 1", "Centro", "Tipo1"],
+      ["Cancha 2", "Norte", "Tipo2"],
+      ["Cancha 3", "Sur", "Tipo1"]
+    ];
+
+    
+    function mostrar(seccion) {
+      document.querySelectorAll("section").forEach(sec => sec.style.display = "none");
+      document.getElementById(seccion).style.display = "block";
+      if (seccion === "usuarios") cargarUsuarios();
+      if (seccion === "reservas") cargarReservas();
+      if (seccion === "canchas") cargarCanchas();
+    }
+
+    
+    function cargarUsuarios() {
+      const tabla = document.getElementById("tablaUsuarios");
+      tabla.innerHTML = "<tr><th>Usuario</th><th>Rol</th></tr>";
+      usuarios.forEach(u => {
+        tabla.innerHTML += `<tr><td>${u[0]}</td><td>${u[1]}</td></tr>`;
+      });
+    }
+    function agregarUsuario() {
+      const nombre = document.getElementById("nuevoUsuario").value;
+      const rol = document.getElementById("nuevoRol").value;
+      if (nombre) {
+        usuarios.push([nombre, rol]);
+        cargarUsuarios();
+        document.getElementById("nuevoUsuario").value = "";
+        alert("Usuario creado correctamente");
+      }
+    }
+
+    
+    function cargarReservas() {
+      const tabla = document.getElementById("tablaReservas");
+      tabla.innerHTML = "<tr><th>Cancha</th><th>Usuario</th><th>Hora</th><th>Acción</th></tr>";
+      reservas.forEach((r, i) => {
+        tabla.innerHTML += `<tr>
+          <td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td>
+          <td><button onclick="cancelarReserva(${i})">Cancelar</button></td>
+        </tr>`;
+      });
+    }
+    function cancelarReserva(index) {
+      reservas.splice(index, 1);
+      cargarReservas();
+    }
+
+    
+    function cargarCanchas() {
+      const tabla = document.getElementById("tablaCanchas");
+      tabla.innerHTML = "<tr><th>Cancha</th><th>Ubicación</th><th>Tipo</th><th>Acción</th></tr>";
+      canchas.forEach((c, i) => {
+        tabla.innerHTML += `<tr>
+          <td>${c[0]}</td><td>${c[1]}</td><td>${c[2]}</td>
+          <td><button onclick="eliminarCancha(${i})">Eliminar</button></td>
+        </tr>`;
+      });
+    }
+    function agregarCancha() {
+      const nombre = document.getElementById("nuevaCancha").value;
+      const ubicacion = document.getElementById("ubicacionCancha").value;
+      const tipo = document.getElementById("tipoCancha").value;
+      if (nombre && ubicacion && tipo) {
+        canchas.push([nombre, ubicacion, tipo]);
+        cargarCanchas();
+        document.getElementById("nuevaCancha").value = "";
+        document.getElementById("ubicacionCancha").value = "";
+        document.getElementById("tipoCancha").value = "";
+      }
+    }
+    function eliminarCancha(index) {
+      canchas.splice(index, 1);
+      cargarCanchas();
+    }
+
+    
+    function salir() {
+      window.location.href = "index.html"; 
+    }
+
+    mostrar("inicio");
+  </script>
+</body>
+</html>
+
+

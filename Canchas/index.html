@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Login</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+  background: url("imagenes/balon.jpeg") no-repeat center center fixed;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+    }
+    .login-box {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      width: 300px;
+    }
+    .login-box h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .login-box input {
+      width: 95%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .login-box button {
+      width: 100%;
+      padding: 10px;
+      background: #007BFF;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .login-box button:hover {
+      background: #0056b3;
+    }
+    .mensaje {
+      margin-top: 15px;
+      text-align: center;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <h2>Iniciar Sesión</h2>
+    <input type="text" id="usuario" placeholder="Usuario">
+    <input type="password" id="clave" placeholder="Contraseña">
+    <button onclick="login()">Entrar</button>
+    <div class="mensaje" id="mensaje"></div>
+  </div>
+
+  <script>
+    
+    const usuarios = [
+      ["admin1", "1234", "Administrador"],
+      ["admin2", "abcd", "Administrador"],
+      ["user1", "pass1", "Usuario"],
+      ["user2", "pass2", "Usuario"]
+    ];
+
+    function login() {
+      const usuario = document.getElementById("usuario").value;
+      const clave = document.getElementById("clave").value;
+      const mensaje = document.getElementById("mensaje");
+
+      let encontrado = false;
+
+      for (let i = 0; i < usuarios.length; i++) {
+        if (usuarios[i][0] === usuario && usuarios[i][1] === clave) {
+          encontrado = true;
+          if (usuarios[i][2] === "Administrador") {
+            // Redirigir a administradores.html
+            window.location.href = "menuA.html";
+          } else {
+            // Redirigir a usuarios.html
+            window.location.href = "menuU.html";
+          }
+          break;
+        }
+      }
+
+      if (!encontrado) {
+        mensaje.textContent = "Usuario o contraseña incorrectos";
+        mensaje.style.color = "black";
+      }
+    }
+  </script>
+</body>
+</html>

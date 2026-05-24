@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel de Usuario</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #eef2f3;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #28a745;
+      color: #fff;
+      padding: 15px;
+      text-align: center;
+    }
+    nav {
+      display: flex;
+      justify-content: center;
+      background: #1e7e34;
+    }
+    nav button {
+      background: none;
+      border: none;
+      color: #fff;
+      padding: 15px 20px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    nav button:hover {
+      background: #145523;
+    }
+    section {
+      display: none;
+      padding: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    table, th, td {
+      border: 1px solid #ccc;
+    }
+    th, td {
+      padding: 8px;
+      text-align: center;
+    }
+    select {
+      margin: 5px;
+      padding: 6px;
+    }
+    #inicio {
+      text-align: center;
+    }
+    #inicio img {
+      max-width: 300px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Panel de Usuario</h1>
+  </header>
+  <nav>
+    <button onclick="mostrar('inicio')">Inicio</button>
+    <button onclick="mostrar('canchas')">Canchas</button>
+    <button onclick="salir()">Salir</button>
+  </nav>
+
+  <section id="inicio">
+    <h2>Bienvenido al Panel de Usuario</h2>
+    <p>Seleccione una opción del menú superior para comenzar.</p>
+    <img src="imagenes/balon.jpeg" alt="">
+  </section>
+
+  <section id="canchas">
+    <h2>Lista de Canchas Disponibles</h2>
+    <label>Filtrar por ubicación:</label>
+    <select id="filtroUbicacion" onchange="filtrarCanchas()">
+      <option value="Todas">Todas</option>
+      <option value="Norte">Norte</option>
+      <option value="Sur">Sur</option>
+      <option value="Centro">Centro</option>
+    </select>
+    <label>Filtrar por tipo:</label>
+    <select id="filtroTipo" onchange="filtrarCanchas()">
+      <option value="Todas">Todas</option>
+      <option value="Tipo1">Tipo1</option>
+      <option value="Tipo2">Tipo2</option>
+    </select>
+
+    <table id="tablaCanchas">
+      <tr><th>Nombre</th><th>Ubicación</th><th>Tipo</th><th>Acción</th></tr>
+    </table>
+  </section>
+
+  <script>
+    let canchas = [
+      ["Cancha 1", "Norte", "Tipo1"],
+      ["Cancha 2", "Sur", "Tipo2"],
+      ["Cancha 3", "Centro", "Tipo2"],
+      ["Cancha 4", "Norte", "Tipo2"],
+      ["Cancha 5", "Sur", "Tipo1"]
+    ];
+
+    let estadoReservas = new Array(canchas.length).fill(false);
+    let horasReservadas = new Array(canchas.length).fill(null);
+
+    function mostrar(seccion) {
+      document.querySelectorAll("section").forEach(sec => sec.style.display = "none");
+      document.getElementById(seccion).style.display = "block";
+      if (seccion === "canchas") cargarCanchas();
+    }
+
+    function cargarCanchas() {
+      const tabla = document.getElementById("tablaCanchas");
+      tabla.innerHTML = "<tr><th>Nombre</th><th>Ubicación</th><th>Tipo</th><th>Acción</th></tr>";
+
+      const filtroUbicacion = document.getElementById("filtroUbicacion").value;
+      const filtroTipo = document.getElementById("filtroTipo").value;
+
+      canchas.forEach((c, i) => {
+        if ((filtroUbicacion === "Todas" || c[1] === filtroUbicacion) &&
+            (filtroTipo === "Todas" || c[2] === filtroTipo)) {
+          tabla.innerHTML += `<tr>
+            <td>${c[0]}</td><td>${c[1]}</td><td>${c[2]}</td>
+            <td>
+              <select id="hora${i}" ${estadoReservas[i] ? "disabled" : ""}>
+                <option value="08:00">08:00</option>
+                <option value="09:00">09:00</option>
+                <option value="10:00">10:00</option>
+                <option value="11:00">11:00</option>
+                <option value="12:00">12:00</option>
+                <option value="13:00">13:00</option>
+                <option value="14:00">14:00</option>
+                <option value="15:00">15:00</option>
+                <option value="16:00">16:00</option>
+                <option value="17:00">17:00</option>
+              </select>
+              <button id="btnReservar${i}" onclick="reservar(${i})" ${estadoReservas[i] ? "disabled" : ""}>Reservar</button>
+              <button id="btnCancelar${i}" onclick="cancelar(${i})" ${estadoReservas[i] ? "" : "disabled"}>Cancelar</button>
+              ${horasReservadas[i] ? `<p>Hora reservada: ${horasReservadas[i]}</p>` : ""}
+            </td>
+          </tr>`;
+        }
+      });
+    }
+
+    function reservar(index) {
+      const horaSeleccionada = document.getElementById(`hora${index}`).value;
+      estadoReservas[index] = true;
+      horasReservadas[index] = horaSeleccionada;
+      alert(`Cancha reservada a las ${horaSeleccionada}. La información de pago se envió al correo.`);
+      cargarCanchas();
+    }
+
+    function cancelar(index) {
+      estadoReservas[index] = false;
+      horasReservadas[index] = null;
+      alert("Reserva cancelada.");
+      cargarCanchas();
+    }
+
+    function filtrarCanchas() {
+      cargarCanchas();
+    }
+
+    function salir() {
+      window.location.href = "index.html"; 
+    }
+
+    mostrar("inicio");
+  </script>
+</body>
+</html>
